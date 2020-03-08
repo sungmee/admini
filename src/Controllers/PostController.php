@@ -136,7 +136,7 @@ class PostController extends Controller
         ];
 
         $this->middleware(function ($request, $next){
-            return ( !!! Admini::auth() )
+            return ( !!! (new Admini)->auth() )
                 ? redirect()->route('admini.login')
                 : $next($request);
         });

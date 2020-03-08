@@ -10,7 +10,7 @@ class AuthController extends Controller
 {
     public function login()
     {
-        if ( Admini::auth() ) {
+        if ( (new Admini)->auth() ) {
             return redirect()->route('admini.posts.index', ['type' => 'news']);
         }
 
@@ -24,7 +24,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        abort_unless( Admini::attempt($request->only('email', 'password') ), 403);
+        abort_unless( (new Admini)->attempt($request->only('email', 'password') ), 403);
         session(['auth' => $request->email]);
 
         return redirect()->route('admini.posts.index', ['type' => 'news']);
