@@ -1,0 +1,35 @@
+{
+    "name": "sungmee/admini",
+    "description": "Admini is a simply auth and post (cms) publication Laravel packages for company homepage or micro blog.",
+    "keywords": ["packages", "laravel", "admin", "cms"],
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/sungmee/admini",
+    "time": "2020-03-05 21:50:00",
+    "authors": [
+        {
+            "name": "SUNGMEE",
+            "email": "mo@lxooo.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sungmee\\Admini\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Sungmee\\Admini\\ServiceProvider"
+            ],
+            "aliases": {
+                "Admin": "Sungmee\\Admini\\Facade"
+            }
+        }
+    }
+}
