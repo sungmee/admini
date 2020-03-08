@@ -1,6 +1,6 @@
 <?php
 
-Route::prefix('admini')->name('admini.')->group(function () {
+Route::prefix('admini')->name('admini.')->middleware('web')->group(function () {
     Route::name('auth.')->group(function () {
         Route::get('/login', '\Sungmee\Admini\AuthController@login')->name('login');
         Route::post('/login', '\Sungmee\Admini\AuthController@auth')->name('auth');
