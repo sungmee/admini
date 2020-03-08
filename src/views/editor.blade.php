@@ -24,10 +24,10 @@
 
     @foreach ($langs as $item)
     <div class="my-3 p-3 bg-white rounded shadow-sm">
-        <h6 class="border-bottom border-gray pb-2 mb-0">{{ $item['title'] }}</h6>
+        <h6 class="border-bottom border-gray pb-2 mb-0">{{ trans($item['language']) }}</h6>
         <div class="row media text-muted pt-3">
             <div class="form-group col-12 {{ $client ?? '' }}">
-                <input type="text" class="form-control{{ $errors->has('title_'.$item['language']) ? ' is-invalid' : '' }}" name="title_{{ $item['language'] }}" value="{{ $post->{$item['language']}->title ?? '' }}" placeholder="{{ $item['title'] }}{{ trans('admini::post.editor.title') }}" required>
+                <input type="text" class="form-control{{ $errors->has('title_'.$item['language']) ? ' is-invalid' : '' }}" name="title_{{ $item['language'] }}" value="{{ $post->{$item['language']}->title ?? '' }}" placeholder="{{ trans($item['language']) }}{{ trans('admini::post.editor.title') }}" required>
                 @if ($errors->has('title_'.$item['language']))
                 <div class="invalid-feedback">
                     {{ $errors->first('title_'.$item['language']) }}
