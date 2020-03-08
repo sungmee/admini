@@ -22,23 +22,23 @@ class Model extends M
 
     public function en()
     {
-        return $this->hasOne(En::class);
+        return $this->hasOne(En::class, 'post_id');
     }
     public function vi()
     {
-        return $this->hasOne(Vi::class);
+        return $this->hasOne(Vi::class, 'post_id');
     }
     public function cn()
     {
-        return $this->hasOne(Cn::class);
+        return $this->hasOne(Cn::class, 'post_id');
     }
     public function tw()
     {
-        return $this->hasOne(Tw::class);
+        return $this->hasOne(Tw::class, 'post_id');
     }
 }
 
-class Language extends Model
+class Language extends M
 {
     public $timestamps = false;
     protected $fillable = ['post_id', 'title', 'pc', 'mobile'];
@@ -49,7 +49,7 @@ class Language extends Model
 
     public function post()
     {
-        return $this->belongsTo('App\Post');
+        return $this->belongsTo('App\Post', 'post_id');
     }
 }
 

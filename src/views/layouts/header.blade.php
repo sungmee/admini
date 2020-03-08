@@ -19,6 +19,9 @@
       <li class="nav-item">
         <a class="nav-link{{ '/admini/pages' == $path ? ' active' : '' }}" href="{{ route('admini.posts.index', ['type' => 'pages']) }}">{{ trans('admini::post.editor.pages_index') }}</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link{{ '/admini/pages/create' == $path ? ' active' : '' }}" href="{{ route('admini.posts.create', ['type' => 'pages']) }}">{{ trans('admini::post.editor.add_page') }}</a>
+      </li>
       <!-- <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Settings</a>
         <div class="dropdown-menu" aria-labelledby="dropdown01">
@@ -28,7 +31,7 @@
         </div>
       </li> -->
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="{{ route('admini.logout') }}" method="POST">
+    <form class="form-inline my-2 my-lg-0" action="{{ route('admini.auth.logout') }}" method="POST">
       <!-- <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"> -->
       @csrf
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">{{ trans('admini::auth.logout') }}</button>

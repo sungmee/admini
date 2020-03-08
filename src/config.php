@@ -8,22 +8,22 @@ return [
         [
             'language' => 'en',
             'locale' => 'en',
-            'class' => '\App\En'
+            'class' => '\Sungmee\Admini\En'
         ],
         [
             'language' => 'vi',
             'locale' => 'vi',
-            'class' => '\App\Vi'
+            'class' => '\Sungmee\Admini\Vi'
         ],
         [
             'language' => 'cn',
             'locale' => 'zh-CN',
-            'class' => '\App\Cn'
+            'class' => '\Sungmee\Admini\Cn'
         ],
         [
             'language' => 'tw',
             'locale' => 'zh-TW',
-            'class' => '\App\Tw'
+            'class' => '\Sungmee\Admini\Tw'
         ]
     ],
 ];

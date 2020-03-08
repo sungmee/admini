@@ -39,6 +39,7 @@ return [
         'list' => '列表',
         'news_index' => '公告列表',
         'add_new' => '发布公告',
+        'add_page' => '发布页面',
         'pages_index' => '页面列表',
         'title' => '标题',
         'slug' => '别名',

@@ -3,20 +3,18 @@
 namespace Sungmee\Admini;
 
 use Illuminate\Support\Str;
-use Sungmee\Admini\Model;
+use Sungmee\Admini\Model as Post;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    private $types;
-
     public function index(Request $request, $type)
     {
         $posts = Post::with('cn')->where('type', str_replace('s', '', $type))->get();
-        $title = $this->types[$type] . trans('admini::post.editor.list');
-        $subtitle = trans('admini::subtitle.total', ['total' => count($posts)]);
+        $title = trans("admini::post.post_type.$type") . trans('admini::post.editor.list');
+        $subtitle = trans('admini::post.subtitle.total', ['total' => count($posts)]);
 
         return view('admini::index', compact('type', 'posts', 'title', 'subtitle'));
     }
@@ -24,7 +22,7 @@ class PostController extends Controller
     public function create(Request $request, $type)
     {
         $client = 'pc';
-        $title = trans('admini::post.editor.add')  . $this->types[$type];
+        $title = trans('admini::post.editor.add')  . trans("admini::post.post_type.$type");
         $action = route('admini.posts.store', compact('type'));
 
         return view('admini::editor', compact('client', 'title', 'action'));
@@ -39,7 +37,7 @@ class PostController extends Controller
         $post->save();
         $this->content($request, $post->id);
 
-        $request->session()->flash('alert', trans('admini::post.store_success'));
+        $request->session()->flash('alert', trans('admini::post.editor.store_success'));
         $request->session()->flash('alert-contextual', 'success');
         return redirect()->route('admini.posts.edit', compact('type','post'));
     }
@@ -58,12 +56,12 @@ class PostController extends Controller
 
     public function update(Request $request, $type, Post $post)
     {
-        $request->validate($this->rules());
+        $request->validate($this->rules($post->slug));
         $post->slug = $request->slug ?? time();
         $post->save();
         $this->content($request, $post->id);
 
-        $request->session()->flash('alert', trans('admini::post.update_success'));
+        $request->session()->flash('alert', trans('admini::post.editor.update_success'));
         $request->session()->flash('alert-contextual', 'success');
         return redirect(url()->previous());
     }
@@ -75,7 +73,7 @@ class PostController extends Controller
         if (request()->ajax()) {
             return response()->json(['errno' => 0], 202);
         } else {
-            $request->session()->flash('alert', trans('admini::post.destory_success'));
+            $request->session()->flash('alert', trans('admini::post.editor.destory_success'));
             $request->session()->flash('alert-contextual', 'success');
             return redirect()->route('admini.posts.index', compact('type'));
         }
@@ -110,11 +108,14 @@ class PostController extends Controller
         ];
     }
 
-    private function rules()
+    private function rules($slug = null)
     {
+        $slug_rule = 'nullable|alpha_dash|max:128';
+        $slug_rule .= empty($slug) ? '|unique:posts' : '';
+
         $rules = [
             'client' => 'nullable|in:pc,mobile',
-            'slug' => 'nullable|alpha_dash|max:128|exists:posts',
+            'slug' => $slug_rule,
         ];
 
         foreach (config('admini.languages') as $lan) {
@@ -127,17 +128,9 @@ class PostController extends Controller
 
     public function __construct()
     {
-        $this->types = [
-            'home' => trans('admini::post.post_type.home'),
-            'pages' => trans('admini::post.post_type.pages'),
-            'posts' => trans('admini::post.post_type.posts'),
-            'news' => trans('admini::post.post_type.news'),
-            'files' => trans('admini::post.post_type.files'),
-        ];
-
         $this->middleware(function ($request, $next){
             return ( !!! (new Admini)->auth() )
-                ? redirect()->route('admini.login')
+                ? redirect()->route('admini.auth.login')
                 : $next($request);
         });
     }
