@@ -33,7 +33,7 @@ class ServiceProvider extends SP
     public function register()
     {
         $this->app->bind('Admini', function () {
-            return new \Sungmee\Admini\Admini();
+            return new Admini;
         });
 
         $this->mergeConfigFrom(__DIR__.'/config.php', 'admini');
