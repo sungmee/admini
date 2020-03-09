@@ -13,7 +13,7 @@ class PostController extends Controller
     public function index(Request $request, $type)
     {
         $language = collect(config('admini.languages'))
-            ->firstWhere('locale', $request->getLocale())['language'];
+            ->firstWhere('locale', app()->getLocale())['language'];
         $posts = Post::where('type', str_replace('s', '', $type))
             ->with($language)
             ->orderBy('updated_at', 'DESC')
@@ -52,7 +52,7 @@ class PostController extends Controller
         $client = $request->client == 'mobile' ? 'mobile' : 'pc';
         $action = route("admini.posts.update", compact('type','post')) . "?client=$client";
         $language = collect(config('admini.languages'))
-            ->firstWhere('locale', $request->getLocale())['language'];
+            ->firstWhere('locale', app()->getLocale())['language'];
         $title = $post->{$language}->title ?? Str::title($post->slug);
         $subtitle = $client == 'pc'
             ? trans('admini::post.subtitle.now_edit_client.pc')
