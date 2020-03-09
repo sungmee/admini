@@ -25,8 +25,8 @@ return [
     'index' => [
         'recent_update' => '最近发表',
         'view' => '预览',
-        'created_at' => '发布日期',
-        'updated_at' => '更新日期',
+        'created_at' => '发布在',
+        'updated_at' => '更新在',
         'edit_pc_version' => '编辑电脑版',
         'edit_mobile_version' => '编辑手机版',
         'destory' => '删除',

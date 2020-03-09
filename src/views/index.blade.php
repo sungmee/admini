@@ -16,8 +16,8 @@
         <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="{{ $color[$index] }}"/><text x="50%" y="50%" fill="{{ $color[$index] }}" dy=".3em">32x32</text></svg>
         <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
             <strong class="d-block text-gray-dark"><a href="{{ route('page', ['page' => $item->slug]) }}" title="{{ trans('admini::post.index.view') }}" target="_blank">{{ $item->{$language}->title ?? Str::title($item->slug) }}</a></strong>
-            {{ trans('admini::post.index.created_at') }}: {{ $item->created_at->toDateString() }}
-            | {{ trans('admini::post.index.updated_at') }}: {{ $item->updated_at->toDateString() }}
+            {{ trans('admini::post.index.created_at') }}: {{ $item->created_at }}
+            | {{ trans('admini::post.index.updated_at') }}: {{ $item->updated_at }}
             | <a class="" href="{{ route('admini.posts.edit', ['type' => $type, 'post' => $item->id]) }}">{{ trans('admini::post.index.edit_pc_version') }}</a>
             | <a class="" href="{{ route('admini.posts.edit', ['type' => $type, 'post' => $item->id]) }}?client=mobile">{{ trans('admini::post.index.edit_mobile_version') }}</a>
             @if ($type == 'news')
