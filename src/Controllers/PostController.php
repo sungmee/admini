@@ -12,17 +12,22 @@ class PostController extends Controller
 {
     public function index(Request $request, $type)
     {
-        $posts = Post::with('cn')->where('type', str_replace('s', '', $type))->get();
-        $title = trans("admini::post.post_type.$type") . trans('admini::post.editor.list');
+        $language = collect(config('admini.languages'))
+            ->firstWhere('locale', $request->getLocale())['language'];
+        $posts = Post::where('type', str_replace('s', '', $type))
+            ->with($language)
+            ->orderBy('updated_at', 'DESC')
+            ->get();
+        $title = trans("admini::post.post_type.$type") . ' ' . trans('admini::post.editor.list');
         $subtitle = trans('admini::post.subtitle.total', ['total' => count($posts)]);
 
-        return view('admini::index', compact('type', 'posts', 'title', 'subtitle'));
+        return view('admini::index', compact('type', 'posts', 'title', 'subtitle', 'language'));
     }
 
     public function create(Request $request, $type)
     {
         $client = 'pc';
-        $title = trans('admini::post.editor.add')  . trans("admini::post.post_type.$type");
+        $title = trans('admini::post.editor.add') . ' ' . trans("admini::post.post_type.$type");
         $action = route('admini.posts.store', compact('type'));
 
         return view('admini::editor', compact('client', 'title', 'action'));
@@ -33,7 +38,7 @@ class PostController extends Controller
         $request->validate($this->rules());
         $post = new Post;
         $post->type = str_replace('s', '', $type);
-        $post->slug = $request->slug ?? time();
+        $post->slug = $request->slug ? Str::slug($request->slug, '-') : time();
         $post->save();
         $this->content($request, $post->id);
 
@@ -46,7 +51,9 @@ class PostController extends Controller
     {
         $client = $request->client == 'mobile' ? 'mobile' : 'pc';
         $action = route("admini.posts.update", compact('type','post')) . "?client=$client";
-        $title = $post->cn->title;
+        $language = collect(config('admini.languages'))
+            ->firstWhere('locale', $request->getLocale())['language'];
+        $title = $post->{$language}->title ?? Str::title($post->slug);
         $subtitle = $client == 'pc'
             ? trans('admini::post.subtitle.now_edit_client.pc')
             : trans('admini::post.subtitle.now_edit_client.mobile');
@@ -57,7 +64,7 @@ class PostController extends Controller
     public function update(Request $request, $type, Post $post)
     {
         $request->validate($this->rules($post->slug));
-        $post->slug = $request->slug ?? time();
+        $post->slug = $request->slug ? Str::slug($request->slug, '-') : time();
         $post->save();
         $this->content($request, $post->id);
 
