@@ -8,7 +8,11 @@ class Model extends M
 {
     protected $table = 'posts';
 
-    protected $fillable = ['type', 'slug'];
+    protected $casts = [
+        'meta' => 'array',
+    ];
+
+    protected $fillable = ['type', 'slug', 'meta'];
 
     // public function __call($method, $arguments)
     // {

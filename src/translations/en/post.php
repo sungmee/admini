@@ -44,6 +44,7 @@ return [
         'title' => 'Title',
         'slug' => 'Slug',
         'slug_label' => 'URI slug',
+        'style' => 'Custom Style (CSS)',
         'content' => 'Content',
         'tag' => 'Tag',
         'tags' => 'Tags',

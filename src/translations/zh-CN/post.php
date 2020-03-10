@@ -44,6 +44,7 @@ return [
         'title' => '标题',
         'slug' => '别名',
         'slug_label' => 'URI 别名（请输入英文字符或数字，且不能与其他内容重复！）',
+        'style' => '自定义样式表（CSS）',
         'content' => '文章内容',
         'tag' => '标签',
         'tags' => '标签',

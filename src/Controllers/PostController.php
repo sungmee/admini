@@ -34,11 +34,12 @@ class PostController extends Controller
     }
 
     public function store(Request $request, $type)
-    {
+    {dd($request->all());
         $request->validate($this->rules());
         $post = new Post;
         $post->type = str_replace('s', '', $type);
         $post->slug = $request->slug ? Str::slug($request->slug, '-') : time();
+        $post->meta = $request->meta;
         $post->save();
         $this->content($request, $post->id);
 
@@ -65,6 +66,7 @@ class PostController extends Controller
     {
         $request->validate($this->rules($post->slug));
         $post->slug = $request->slug ? Str::slug($request->slug, '-') : time();
+        $post->meta = $request->meta;
         $post->save();
         $this->content($request, $post->id);
 
@@ -123,6 +125,7 @@ class PostController extends Controller
         $rules = [
             'client' => 'nullable|in:pc,mobile',
             'slug' => $slug_rule,
+            'meta' => 'nullable|array'
         ];
 
         foreach (config('admini.languages') as $lan) {

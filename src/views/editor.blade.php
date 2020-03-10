@@ -3,11 +3,11 @@
 @section('title', $title ?? trans('admini::post.title.default'))
 
 @php
-    $langs = config('admini.languages');
+    $config = config('admini');
 @endphp
 
 @section('content')
-<form class="pb-3" action="{{ $action }}" method="post">
+<form class="pb-3" action="{{ $action }}" method="POST">
     <div class="my-3 p-3 bg-white rounded shadow-sm {{ $client ?? '' }}">
         <div class="row media text-muted pt-3">
             <div class="form-group col-12">
@@ -19,10 +19,35 @@
                 </div>
                 @endif
             </div>
+            @foreach ($config['post_meta'] as $item)
+            <div class="form-group col-{{ $item['col'] ?? 12 }}">
+                @php
+                    $value = old('meta.'.$item['name'], $post->meta[$item['name']] ?? '');
+                @endphp
+                @switch($item['type'])
+                    @case('radio')
+                    @case('checkbox')
+                        @foreach ($item['radios'] as $i)
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="{{ $item['type'] }}" name="meta[{{ $item['name'] }}]" id="meta_{{ $item['name'] }}" value="{{ $i['value'] }}"{{ $value == $i['value'] ? ' checked' : '' }}>
+                            <label class="form-check-label" for="meta[{{ $item['name'] }}]">{{ $i['label'] }}</label>
+                        </div>
+                        @endforeach
+                    @break
+                    @case('textarea')
+                        <label for="meta[{{ $item['name'] }}]">{{ $item['label'] }}</label>
+                        <textarea class="form-control{{ $errors->has('slug') ? ' is-invalid' : '' }}" id="meta_{{ $item['name'] }}" name="meta[{{ $item['name'] }}]">{{ $value }}</textarea>
+                    @break
+                    @default
+                        <label for="meta[{{ $item['name'] }}]">{{ $item['label'] }}</label>
+                        <input type="{{ $item['type'] }}" class="form-control" id="meta_{{ $item['name'] }}" name="meta[{{ $item['name'] }}]" value="{{ $value }}">
+                @endswitch
+            </div>
+            @endforeach
         </div>
     </div>
 
-    @foreach ($langs as $item)
+    @foreach ($config['languages'] as $item)
     <div class="my-3 p-3 bg-white rounded shadow-sm">
         <h6 class="border-bottom border-gray pb-2 mb-0">{{ trans('admini::locale.'.$item['language']) }}</h6>
         <div class="row media text-muted pt-3">
@@ -46,7 +71,7 @@
 
     @csrf
     @if (isset($post) && !empty($post))
-    <input type="hidden" name="_method" value="put">
+    @method('PUT')
     @endif
     <button class="btn btn-outline-success btn-block my-2 my-sm-0" type="submit">{{ trans('admini::post.editor.submit') }}</button>
 </form>
@@ -70,7 +95,7 @@
         }
     }
 
-    let languages = @json($langs)
+    let languages = @json($config['languages'])
 
     languages.forEach(item => {
         let e = item.language
