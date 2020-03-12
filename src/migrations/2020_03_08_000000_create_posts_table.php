@@ -15,7 +15,7 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
-            $table->enum('type', ['home', 'menu', 'page', 'post', 'new', 'file'])->default('post');
+            $table->enum('type', ['post', 'page', 'new', 'notice', 'file', 'menu', 'homepage'])->default('post');
             $table->string('slug', 128)->unique();
             $table->json('meta')->nullable();
             $table->timestamps();
