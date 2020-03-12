@@ -63,7 +63,7 @@
                 <div id="{{ $item['language'] }}">
                     {!! old('content_'.$item['language'], $post->{$item['language']}->{$client} ?? '') !!}
                 </div>
-                <textarea class="form-control dn" id="c{{ $item['language'] }}" name="content_{{ $item['language'] }}"></textarea>
+                <textarea class="form-control dn content" id="c{{ $item['language'] }}" name="content_{{ $item['language'] }}"></textarea>
             </div>
         </div>
     </div>
@@ -79,14 +79,21 @@
 
 @push('scripts')
 <script>
-    var E = window.wangEditor
-
-    var config = function (e) {
-        let onchange = function (html) {
-            e.val(html)
+    let codeToggler = {
+        init: e => $(`#${e} .w-e-toolbar`).prepend(`<div class="w-e-menu btn-code"><a class="_wangEditor_btn_code" href="javascript:;" onclick="codeToggler.toggle('${e}')">CODE</a></div>`),
+        toggle: e => {
+            let btn = $(`#${e} ._wangEditor_btn_code`)
+            $(`#${e} .w-e-text-container, #${e} .w-e-menu, #c${e}`).toggle()
+            $(`#${e} .btn-code`).show()
+            btn.text() == 'CODE' ? btn.text('HTML') : btn.text('CODE')
         }
+    }
+
+    let languages = @json($config['languages'])
+
+    let et = {}, E = window.wangEditor, config = lang => {
         return {
-            onchange,
+            onchange: html => $(`#c${lang}`).val(html),
             uploadImgServer: '/admini/upload',
             uploadImgMaxLength: 1,
             uploadImgParams: {
@@ -95,16 +102,14 @@
         }
     }
 
-    let languages = @json($config['languages'])
-
-    languages.forEach(item => {
-        let e = item.language
-        let d = 'c' + item.language
-        window[e] = new E('#'+item.language)
-        window[d] = $('#c'+item.language)
-        window[e].customConfig = config(window[d])
-        window[e].create()
-        window[d].val(window[e].txt.html())
+    languages.forEach(i => {
+        et[i.language] = new E(`#${i.language}`)
+        et[i.language].customConfig = config(i.language)
+        et[i.language].create()
+        codeToggler.init(i.language)
+        $(`#c${i.language}`).val(et[i.language].txt.html()).change(function() {
+            et[i.language].txt.html($(this).val())
+        })
     })
 </script>
 @endpush

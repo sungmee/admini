@@ -109,6 +109,21 @@
         .dn, .mobile {
             display: none;
         }
+
+        .content {
+            height: 300px !important;
+            border-radius: 0px;
+            border-top: 0px;
+        }
+
+        .w-e-menu a {
+            color: #999;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .w-e-menu a:hover {
+            color: #333;
+        }
     </style>
 
     <title>{{ config('app.name') }} - @yield('title')</title>
@@ -131,9 +146,6 @@
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.bootcss.com/wangEditor/10.0.13/wangEditor.min.js"></script>
-    <script>
-
-    </script>
 
     @stack('scripts')
 </body>
