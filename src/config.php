@@ -7,24 +7,12 @@ return [
     'languages' => [
         [
             'language' => 'en',
-            'locale' => 'en',
-            'class' => '\Sungmee\Admini\En'
-        ],
-        [
-            'language' => 'vi',
-            'locale' => 'vi',
-            'class' => '\Sungmee\Admini\Vi'
+            'locale' => 'en'
         ],
         [
             'language' => 'cn',
-            'locale' => 'zh-CN',
-            'class' => '\Sungmee\Admini\Cn'
+            'locale' => 'zh-CN'
         ],
-        [
-            'language' => 'tw',
-            'locale' => 'zh-TW',
-            'class' => '\Sungmee\Admini\Tw'
-        ]
     ],
 
     'post_meta' => [

@@ -2,6 +2,7 @@
 
 namespace Sungmee\Admini;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model as M;
 
 class Model extends M
@@ -14,53 +15,31 @@ class Model extends M
 
     protected $fillable = ['type', 'slug', 'meta'];
 
-    // public function __call($method, $arguments)
-    // {
-    //     if (in_array($method, ['en','vi','cn','tw'])) {
-    //         $class = \Str::studly($method);
-    //         return $this->hasOne($class);
-    //     } else {
-    //         parent::__call($method, $arguments);
-    //     }
-    // }
+    public function __call($method, $arguments)
+    {
+        if ($lang = collect(config('admini.languages'))->firstWhere('language', $method)) {
+            // $table = Str::plural($lang['language']);
+            // return $this->hasOne(new \Sungmee\Admini\Language($table), 'post_id');
+            $class = '\\Sungmee\\Admini\\'.Str::studly($lang['language']);
+            return $this->hasOne($class, 'post_id');
+        }
 
-    public function en()
-    {
-        return $this->hasOne(En::class, 'post_id');
-    }
-    public function vi()
-    {
-        return $this->hasOne(Vi::class, 'post_id');
-    }
-    public function cn()
-    {
-        return $this->hasOne(Cn::class, 'post_id');
-    }
-    public function tw()
-    {
-        return $this->hasOne(Tw::class, 'post_id');
+        return parent::__call($method, $arguments);
     }
 }
 
 class Language extends M
 {
+    protected $table = null;
     public $timestamps = false;
     protected $fillable = ['post_id', 'title', 'pc', 'mobile'];
 
-    // public function __construct($table = 'cns')
-    // {
-    // }
-
     public function post()
     {
-        return $this->belongsTo('App\Post', 'post_id');
+        return $this->belongsTo(Post::class, 'post_id');
     }
 }
 
-// foreach (config('admini.languages') as $item) {
-    // class $item['language'] extends Language {}
-// }
+class Post extends Model {}
 class En extends Language {}
-class Vi extends Language {}
 class Cn extends Language {}
-class Tw extends Language {}

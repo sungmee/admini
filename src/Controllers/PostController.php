@@ -3,28 +3,24 @@
 namespace Sungmee\Admini;
 
 use Illuminate\Support\Str;
-use Sungmee\Admini\Model as Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
-    public function index(Request $request, $type)
+    public function index(Request $request, string $type)
     {
-        $language = collect(config('admini.languages'))
-            ->firstWhere('locale', app()->getLocale())['language'];
-        $posts = Post::where('type', str_replace('s', '', $type))
-            ->with($language)
-            ->orderBy('updated_at', 'DESC')
-            ->get();
+        $posts = (new Admini)->posts($type);
         $title = trans("admini::post.post_type.$type") . ' ' . trans('admini::post.editor.list');
         $subtitle = trans('admini::post.subtitle.total', ['total' => count($posts)]);
 
-        return view('admini::index', compact('type', 'posts', 'title', 'subtitle', 'language'));
+        return view('admini::index', compact('type', 'posts', 'title', 'subtitle'));
     }
 
-    public function create(Request $request, $type)
+    public function create(Request $request, string $type)
     {
         $client = 'pc';
         $title = trans('admini::post.editor.add') . ' ' . trans("admini::post.post_type.$type");
@@ -33,51 +29,59 @@ class PostController extends Controller
         return view('admini::editor', compact('client', 'title', 'action'));
     }
 
-    public function store(Request $request, $type)
-    {dd($request->all());
+    public function store(Request $request, string $type)
+    {
         $request->validate($this->rules());
-        $post = new Post;
-        $post->type = str_replace('s', '', $type);
-        $post->slug = $request->slug ? Str::slug($request->slug, '-') : time();
-        $post->meta = $request->meta;
-        $post->save();
-        $this->content($request, $post->id);
+
+        $now = now();
+
+        $id = DB::table('posts')->insertGetId([
+            'type' => str_replace('s', '', $type),
+            'slug' => $request->slug ? Str::slug($request->slug, '-') : time(),
+            'meta' => json_encode($request->meta),
+            'created_at' => $now,
+            'updated_at' => $now
+        ]);
+        $this->content($request, $id);
 
         $request->session()->flash('alert', trans('admini::post.editor.store_success'));
         $request->session()->flash('alert-contextual', 'success');
-        return redirect()->route('admini.posts.edit', compact('type','post'));
+        return redirect()->route('admini.posts.edit', compact('type','id'));
     }
 
-    public function edit(Request $request, $type, Post $post)
+    public function edit(Request $request, string $type, int $id)
     {
-        $client = $request->client == 'mobile' ? 'mobile' : 'pc';
-        $action = route("admini.posts.update", compact('type','post')) . "?client=$client";
-        $language = collect(config('admini.languages'))
-            ->firstWhere('locale', app()->getLocale())['language'];
-        $title = $post->{$language}->title ?? Str::title($post->slug);
-        $subtitle = $client == 'pc'
-            ? trans('admini::post.subtitle.now_edit_client.pc')
-            : trans('admini::post.subtitle.now_edit_client.mobile');
-
+        $client = $request->client ?? 'pc';
+        $action = route("admini.posts.update", compact('type','id')) . "?client=$client";
+        $post = (new Admini)->postFull($id);
+        $title = $post->title ?? Str::title($post->slug);
+        $subtitle = trans("admini::post.subtitle.now_edit_client.$client");
         return view('admini::editor', compact('client', 'title', 'subtitle', 'action', 'post'));
     }
 
-    public function update(Request $request, $type, Post $post)
+    public function update(Request $request, string $type, int $id)
     {
-        $request->validate($this->rules($post->slug));
-        $post->slug = $request->slug ? Str::slug($request->slug, '-') : time();
-        $post->meta = $request->meta;
-        $post->save();
-        $this->content($request, $post->id);
+        $post = DB::table('posts')->find($id);
+
+        $request->validate($this->rules($post->id));
+
+        DB::table('posts')
+            ->where('id', $id)
+            ->update([
+                'slug' => $request->slug ? Str::slug($request->slug, '-') : time(),
+                'meta' => json_encode($request->meta),
+                'updated_at' => now()
+            ]);
+        $this->content($request, $id);
 
         $request->session()->flash('alert', trans('admini::post.editor.update_success'));
         $request->session()->flash('alert-contextual', 'success');
         return redirect(url()->previous());
     }
 
-    public function destory($type, Post $post)
+    public function destory(string $type, int $id)
     {
-        $post->delete();
+        DB::table('posts')->where('id', $id)->delete();
 
         if (request()->ajax()) {
             return response()->json(['errno' => 0], 202);
@@ -88,17 +92,18 @@ class PostController extends Controller
         }
     }
 
-    private function content($request, $post_id)
+    private function content(Request $request, int $post_id)
     {
         $post_id = compact('post_id');
-        $content_key = $request->client == 'mobile' ? 'mobile' : 'pc';
 
-        foreach (config('admini.languages') as $lan) {
-            $title = "title_{$lan['language']}";
-            $content = "content_{$lan['language']}";
-            $lan['class']::updateOrCreate($post_id,[
+        foreach (config('admini.languages') as $lang) {
+            $table = Str::plural($lang['language']);
+            $title = "title_{$lang['language']}";
+            $content = "content_{$lang['language']}";
+            $client = $request->client ?? 'pc';
+            DB::table($table)->updateOrInsert($post_id,[
                 'title' => $request->$title,
-                $content_key => $request->$content
+                $client => $request->$content
             ]);
         }
     }
@@ -107,7 +112,13 @@ class PostController extends Controller
     {
         $data = array_reduce($request->file(), function($carry, $file) {
             $carry[] = $path = Storage::url($file->store('public'));
-            Post::create(['type' => 'file', 'slug' => $path]);
+            $now = now();
+            DB::table('posts')->insertOrIgnore([
+                'type' => 'file',
+                'slug' => $path,
+                'created_at' => $now,
+                'updated_at' => $now
+            ]);
             return $carry;
         }, []);
 
@@ -117,20 +128,19 @@ class PostController extends Controller
         ];
     }
 
-    private function rules($slug = null)
+    private function rules(int $id = null)
     {
-        $slug_rule = 'nullable|alpha_dash|max:128';
-        $slug_rule .= empty($slug) ? '|unique:posts' : '';
-
         $rules = [
-            'client' => 'nullable|in:pc,mobile',
-            'slug' => $slug_rule,
-            'meta' => 'nullable|array'
+            'client' => 'nullable|string|in:pc,mobile',
+            'meta' => 'nullable|array',
+            'slug' => ['nullable', 'alpha_dash', 'max:128',
+                $id ? Rule::unique('posts')->ignore($id) : '',
+            ]
         ];
 
-        foreach (config('admini.languages') as $lan) {
-            $rules["title_{$lan['language']}"] = 'required|string|max:100';
-            $rules["content_{$lan['language']}"] = 'nullable|string';
+        foreach (config('admini.languages') as $lang) {
+            $rules["title_{$lang['language']}"] = 'required|string|max:100';
+            $rules["content_{$lang['language']}"] = 'nullable|string';
         }
 
         return $rules;

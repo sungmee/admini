@@ -13,16 +13,28 @@ class ServiceProvider extends SP
      */
     public function boot()
     {
+        $this->app['router']->pushMiddlewareToGroup('web', Middleware::class);
+
         $this->loadMigrationsFrom(__DIR__.'/migrations');
-        $this->loadViewsFrom(__DIR__.'/views', 'admini');
-        $this->loadTranslationsFrom(__DIR__.'/translations', 'admini');
         $this->loadRoutesFrom(__DIR__.'/routes.php');
+        $this->loadTranslationsFrom(__DIR__.'/translations', 'admini');
+        $this->loadViewsFrom(__DIR__.'/views', 'admini');
 
         $this->publishes([
             __DIR__.'/assets' => public_path('vendor/admini'),
         ], 'public');
 
-        $this->app['router']->pushMiddlewareToGroup('web', Middleware::class);
+        $this->publishes([
+            __DIR__.'/views' => resource_path('views/vendor/admini'),
+        ], 'views');
+
+        $this->publishes([
+            __DIR__.'/config.php' => config_path('admini.php'),
+        ], 'config');
+
+        $this->publishes([
+            __DIR__.'/translations' => resource_path('lang/vendor/admini'),
+        ], 'translations');
     }
 
     /**
