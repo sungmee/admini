@@ -26,7 +26,9 @@ class AuthController extends Controller
         abort_unless( (new Admini)->attempt($request->only('email', 'password') ), 403);
         session(['auth' => $request->email]);
 
-        return redirect()->route('admini.posts.index', ['type' => 'news']);
+        return session('url')
+            ? redirect(session('url'))
+            : redirect()->route('admini.posts.index', ['type' => 'news']);
     }
 
     public function logout(Request $request)

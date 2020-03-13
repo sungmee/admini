@@ -149,9 +149,10 @@ class PostController extends Controller
     public function __construct()
     {
         $this->middleware(function ($request, $next){
-            return ( !!! (new Admini)->auth() )
-                ? redirect()->route('admini.auth.login')
-                : $next($request);
+            if ( !!! (new Admini)->auth() ) {
+                session(['url' => url()->current()]);
+                return redirect()->route('admini.auth.login');
+            } else return $next($request);
         });
     }
 }
