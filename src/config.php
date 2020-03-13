@@ -15,6 +15,8 @@ return [
         ],
     ],
 
+    'mobile_version' => false,
+
     'post_meta' => [
         // [
         //     'type' => 'radio', // radio, checkbox

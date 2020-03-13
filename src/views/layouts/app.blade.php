@@ -106,6 +106,10 @@
             }
         }
 
+        .fixed-top {
+            z-index: 99999;
+        }
+
         .dn, .mobile {
             display: none;
         }

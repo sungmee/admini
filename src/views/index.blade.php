@@ -19,7 +19,9 @@
             {{ trans('admini::post.index.created_at') }}: {{ $item->created_at }}
             | {{ trans('admini::post.index.updated_at') }}: {{ $item->updated_at }}
             | <a class="" href="{{ route('admini.posts.edit', ['type' => $type, 'id' => $item->post_id]) }}">{{ trans('admini::post.index.edit_pc_version') }}</a>
+            @if (config('admini.mobile_version'))
             | <a class="" href="{{ route('admini.posts.edit', ['type' => $type, 'id' => $item->post_id]) }}?client=mobile">{{ trans('admini::post.index.edit_mobile_version') }}</a>
+            @endif
             @if ($type == 'news')
             | <a class="del" href="javascript:;" data-id="{{ $item->post_id }}" data-title="{{ $item->title }}" data-url="{{ route('admini.posts.destory', ['type' => $type, 'id' => $item->post_id]) }}">{{ trans('admini::post.index.destory') }}</a>
             @endif
