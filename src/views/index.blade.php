@@ -22,7 +22,7 @@
             @if (config('admini.mobile_version'))
             | <a class="" href="{{ route('admini.posts.edit', ['type' => $type, 'id' => $item->post_id]) }}?client=mobile">{{ trans('admini::post.index.edit_mobile_version') }}</a>
             @endif
-            @if ($type == 'news')
+            @if (in_array($type, config('admini.delete_botton_in_post_types')))
             | <a class="del" href="javascript:;" data-id="{{ $item->post_id }}" data-title="{{ $item->title }}" data-url="{{ route('admini.posts.destory', ['type' => $type, 'id' => $item->post_id]) }}">{{ trans('admini::post.index.destory') }}</a>
             @endif
         </p>

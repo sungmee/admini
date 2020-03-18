@@ -29,7 +29,7 @@
                     @case('checkbox')
                         @foreach ($item['radios'] as $i)
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="{{ $item['type'] }}" name="meta[{{ $item['name'] }}]" id="meta_{{ $item['name'] }}" value="{{ $i['value'] }}"{{ $value == $i['value'] ? ' checked' : '' }}>
+                            <input class="form-check-input" type="{{ $item['type'] }}" name="meta[{{ $item['name'] }}]" id="meta_{{ $item['name'] }}_{{ $i['value'] }}" value="{{ $i['value'] }}"{{ $value == $i['value'] ? ' checked' : '' }}>
                             <label class="form-check-label" for="meta[{{ $item['name'] }}]">{{ $i['label'] }}</label>
                         </div>
                         @endforeach
@@ -61,18 +61,19 @@
             </div>
             <div class="form-group col-12">
                 <div id="{{ $item['language'] }}">
-                    {!! old('content_'.$item['language'], $post->{$item['language']}->{$client} ?? '') !!}
                 </div>
-                <textarea class="form-control dn content" id="c{{ $item['language'] }}" name="content_{{ $item['language'] }}"></textarea>
+                <textarea class="form-control dn content" id="c{{ $item['language'] }}" name="content_{{ $item['language'] }}">{!! old('content_'.$item['language'], $post->{$item['language']}->{$client} ?? '') !!}</textarea>
             </div>
         </div>
     </div>
     @endforeach
 
     @csrf
+
     @if (isset($post) && !empty($post))
     @method('PUT')
     @endif
+
     <button class="btn btn-outline-success btn-block my-2 my-sm-0" type="submit">{{ trans('admini::post.editor.submit') }}</button>
 </form>
 @stop
@@ -107,7 +108,9 @@
         et[i.language].customConfig = config(i.language)
         et[i.language].create()
         codeToggler.init(i.language)
-        $(`#c${i.language}`).val(et[i.language].txt.html()).change(function() {
+        et[i.language].txt.html($(`#c${i.language}`).val())
+        // $(`#c${i.language}`).val(et[i.language].txt.html()).change(function() {
+        $(`#c${i.language}`).change(function() {
             et[i.language].txt.html($(this).val())
         })
     })

@@ -33,5 +33,7 @@ return [
             'label' => '自定义样式表（CSS）',
             'col' => 12
         ],
-    ]
+    ],
+
+    'delete_botton_in_post_types' => ['news', 'pages'],
 ];
