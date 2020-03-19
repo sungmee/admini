@@ -5,6 +5,10 @@ namespace Sungmee\Admini;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model as M;
 
+class Post extends Model {}
+class En extends Language {}
+class Cn extends Language {}
+
 class Model extends M
 {
     protected $table = 'posts';
@@ -26,6 +30,14 @@ class Model extends M
 
         return parent::__call($method, $arguments);
     }
+
+    /**
+     * 获得有此产品的分类。
+     */
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
+    }
 }
 
 class Language extends M
@@ -40,6 +52,12 @@ class Language extends M
     }
 }
 
-class Post extends Model {}
-class En extends Language {}
-class Cn extends Language {}
+class Tag extends Model
+{
+    protected $fillable = ['type', 'slug', 'name'];
+
+    public function posts()
+    {
+        return $this->morphedByMany(Post::class, 'taggable');
+    }
+}

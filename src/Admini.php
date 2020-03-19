@@ -57,6 +57,7 @@ class Admini {
         $post->locale = $this->locale;
         $post->meta = json_decode($post->meta, true);
         $post->suptitle = $subslug ? $this->getPost($slug)->title : null;
+        $post->tags = $this->getTags($post->post_id);
 
         return $post;
     }
@@ -67,6 +68,22 @@ class Admini {
             ->where('slug', $slug)
             ->join($this->table, 'posts.id', '=', "{$this->table}.post_id")
             ->first();
+    }
+
+    public function getTags(int $id)
+    {
+        $ids = DB::table('taggables')
+            ->where('taggable_id', $id)
+            ->pluck('tag_id')
+            ->all();
+
+        return DB::table('tags')
+            ->whereIn('id', $ids)
+            ->get()
+            ->map(function ($item, $key) {
+                $item->names = json_decode($item->names, true);
+                return $item;
+            });
     }
 
     public function explodePath(string $slug, $subslug)

@@ -42,7 +42,7 @@ $('.del').on('click', function() {
     let id = $(this).data('id')
     let title = $(this).data('title')
     let url = $(this).data('url')
-    let msg = `{{ trans('admini::post.index.destory_confirm', ['title' => '${title}']) }}`
+    let msg = `{{ trans('admini::post.index.destory_confirm') }}`
     let conf = {
         _method: "delete",
         _token: $('meta[name="csrf-token"]').attr('content')

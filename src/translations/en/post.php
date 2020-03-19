@@ -32,7 +32,7 @@ return [
         'destory' => 'Destory',
         'no_data' => 'No Data',
         'all' => 'All',
-        'destory_confirm' => 'Are you sure to destory「 :TITLE 」?',
+        'destory_confirm' => 'Are you sure to destory ${title} ?',
     ],
     'editor' => [
         'add' => 'Add',
@@ -49,8 +49,18 @@ return [
         'tag' => 'Tag',
         'tags' => 'Tags',
         'submit' => 'Submit',
-        'update_success' => 'Article update was successful!',
-        'store_success' => 'Article store was successful!',
-        'destory_success' => 'Article delete was successful!',
+        'update_success' => 'Update was successful!',
+        'store_success' => 'Store was successful!',
+        'destory_success' => 'Delete was successful!',
+    ],
+    'tags' => [
+        'title' => 'Tags',
+        'list' => 'Tags List',
+        'tag' => 'Tag',
+        'tags' => 'Tags',
+        'edit' => 'Edit',
+        'name' => 'Name',
+        'update' => 'Update',
+        'type' => 'Type'
     ]
 ];

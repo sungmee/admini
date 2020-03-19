@@ -4,10 +4,10 @@ namespace Sungmee\Admini;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -25,8 +25,10 @@ class PostController extends Controller
         $client = 'pc';
         $title = trans('admini::post.editor.add') . ' ' . trans("admini::post.post_type.$type");
         $action = route('admini.posts.store', compact('type'));
+        $tags = DB::table('tags')->where('type', str_replace('s', '', $type))->get();
+        $taggables = [];
 
-        return view('admini::editor', compact('client', 'title', 'action'));
+        return view('admini::editor', compact('client', 'title', 'action', 'tags', 'taggables'));
     }
 
     public function store(Request $request, string $type)
@@ -44,6 +46,15 @@ class PostController extends Controller
         ]);
         $this->content($request, $id);
 
+        $taggables = [];
+        foreach ($request->tags as $item) {
+            $taggables[] = [
+                'tag_id' => $item,
+                'taggable_id' => $id
+            ];
+        }
+        DB::table('taggables')->insert($taggables);
+
         $request->session()->flash('alert', trans('admini::post.editor.store_success'));
         $request->session()->flash('alert-contextual', 'success');
         return redirect()->route('admini.posts.edit', compact('type','id'));
@@ -56,7 +67,9 @@ class PostController extends Controller
         $post = (new Admini)->postFull($id);
         $title = $post->title ?? Str::title($post->slug);
         $subtitle = trans("admini::post.subtitle.now_edit_client.$client");
-        return view('admini::editor', compact('client', 'title', 'subtitle', 'action', 'post'));
+        $tags = DB::table('tags')->where('type', str_replace('s', '', $type))->get();
+        $taggables = DB::table('taggables')->where('taggable_id', $post->id)->pluck('tag_id')->all();
+        return view('admini::editor', compact('client', 'title', 'subtitle', 'action', 'post', 'tags', 'taggables'));
     }
 
     public function update(Request $request, string $type, int $id)
@@ -74,6 +87,18 @@ class PostController extends Controller
             ]);
         $this->content($request, $id);
 
+        DB::table('taggables')->where('taggable_id', $id)->delete();
+        if ($request->tags) {
+            $taggables = [];
+            foreach ($request->tags as $item) {
+                $taggables[] = [
+                    'tag_id' => $item,
+                    'taggable_id' => $id
+                ];
+            }
+            DB::table('taggables')->insert($taggables);
+        }
+
         $request->session()->flash('alert', trans('admini::post.editor.update_success'));
         $request->session()->flash('alert-contextual', 'success');
         return redirect(url()->previous());
@@ -82,6 +107,7 @@ class PostController extends Controller
     public function destory(string $type, int $id)
     {
         DB::table('posts')->where('id', $id)->delete();
+        DB::table('taggables')->where('taggable_id', $id)->delete();
 
         if (request()->ajax()) {
             return response()->json(['errno' => 0], 202);
@@ -133,9 +159,8 @@ class PostController extends Controller
         $rules = [
             'client' => 'nullable|string|in:pc,mobile',
             'meta' => 'nullable|array',
-            'slug' => ['nullable', 'alpha_dash', 'max:128',
-                $id ? Rule::unique('posts')->ignore($id) : '',
-            ]
+            'tags' => 'nullable|array',
+            'slug' => ['nullable','alpha_dash','max:128',Rule::unique('posts')->ignore($id)]
         ];
 
         foreach (config('admini.languages') as $lang) {

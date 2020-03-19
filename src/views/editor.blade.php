@@ -4,6 +4,8 @@
 
 @php
     $config = config('admini');
+    $language = collect($config['languages'])->pluck('language', 'locale');
+    $language = $language[app()->getLocale()];
 @endphp
 
 @section('content')
@@ -44,6 +46,23 @@
                 @endswitch
             </div>
             @endforeach
+        </div>
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <h6 class="border-bottom border-gray pb-2 mb-0">{{ trans('admini::post.tags.tags') }}</h6>
+        <div class="row media text-muted pt-3">
+            <div class="form-group col-12">
+                @forelse ($tags as $item)
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="tags[]" id="tag_{{ $item->id }}" value="{{ $item->id }}"{{
+                        in_array($item->id, $taggables) ? ' checked' : '' }}>
+                    <label class="form-check-label" for="tags">{{ json_decode($item->names, true)[$language] }}</label>
+                </div>
+                @empty
+                <a class="btn btn-link" href="{{ route('admini.tags.index') }}">{{ trans('admini::post.tags.title') }}</a>
+                @endforelse
+            </div>
         </div>
     </div>
 

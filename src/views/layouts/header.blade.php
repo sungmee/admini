@@ -22,6 +22,9 @@
       <li class="nav-item">
         <a class="nav-link{{ '/admini/pages/create' == $path ? ' active' : '' }}" href="{{ route('admini.posts.create', ['type' => 'pages']) }}">{{ trans('admini::post.editor.add_page') }}</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link{{ Str::contains($path, 'tags') ? ' active' : '' }}" href="{{ route('admini.tags.index') }}">{{ trans('admini::post.tags.title') }}</a>
+      </li>
       <!-- <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Settings</a>
         <div class="dropdown-menu" aria-labelledby="dropdown01">

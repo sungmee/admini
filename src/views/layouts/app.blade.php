@@ -116,8 +116,19 @@
 
         .content {
             height: 300px !important;
-            border-radius: 0px;
+            border-radius: 0;
             border-top: 0px;
+        }
+
+        .tag-name {
+            border-radius: 0;
+            margin-top: -1px;
+        }
+        .tag-name-first {
+            border-radius: .25rem .25rem 0 0;
+        }
+        .tag-name-last {
+            border-radius: 0 0 .25rem .25rem;
         }
 
         .w-e-menu a {

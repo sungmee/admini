@@ -32,7 +32,7 @@ return [
         'destory' => '删除',
         'no_data' => '暂无数据',
         'all' => '所有',
-        'destory_confirm' => '您真的确定要删除「 :TITLE 」吗？',
+        'destory_confirm' => '您真的确定要删除 ${title} 吗？',
     ],
     'editor' => [
         'add' => '新增',
@@ -49,8 +49,18 @@ return [
         'tag' => '标签',
         'tags' => '标签',
         'submit' => '提交',
-        'update_success' => '已成功更新文章！',
-        'store_success' => '已成功添加文章！',
-        'destory_success' => '已成功删除文章！',
+        'update_success' => '已成功更新！',
+        'store_success' => '已成功添加！',
+        'destory_success' => '已成功删除！',
+    ],
+    'tags' => [
+        'title' => '管理标签',
+        'list' => '标签列表',
+        'tag' => '标签',
+        'tags' => '标签',
+        'edit' => '编辑',
+        'name' => '名称',
+        'update' => '更新',
+        'type' => '分类'
     ]
 ];

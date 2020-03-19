@@ -7,6 +7,8 @@ Route::prefix('admini')->name('admini.')->middleware('web')->group(function () {
         Route::post('/logout', '\Sungmee\Admini\AuthController@logout')->name('logout');
     });
 
+    Route::resource('tags', '\Sungmee\Admini\TagController')->except(['show','create']);
+
     Route::post('/upload', '\Sungmee\Admini\PostController@upload')->name('upload');
 
     Route::name('posts.')->group(function () {
