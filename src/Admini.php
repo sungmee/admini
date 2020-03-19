@@ -29,11 +29,19 @@ class Admini {
 
     public function tag(string $slug)
     {
-        $tid = DB::table('tags')->where('slug', $slug)->value('id');
-        $pids = DB::table('taggables')->where('tag_id', $tid)->pluck('taggable_id')->all();
+        $tid = DB::table('tags')
+            ->where('slug', $slug)
+            ->value('id');
+
+        $pids = DB::table('taggables')
+            ->where('tag_id', $tid)
+            ->pluck('taggable_id')
+            ->all();
+
         return DB::table('posts')
             ->whereIn('id', $pids)
             ->join($this->table, 'posts.id', '=', "{$this->table}.post_id")
+            ->orderBy('created_at', 'DESC')
             ->get();
     }
 
@@ -62,6 +70,7 @@ class Admini {
         return DB::table('posts')
             ->where('type', str_replace('s', '', $type))
             ->join($this->table, 'posts.id', '=', "{$this->table}.post_id")
+            ->orderBy('created_at', 'DESC')
             ->get();
     }
 
