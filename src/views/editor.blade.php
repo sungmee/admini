@@ -49,6 +49,7 @@
         </div>
     </div>
 
+    @if ($tags->count())
     <div class="my-3 p-3 bg-white rounded shadow-sm">
         <h6 class="border-bottom border-gray pb-2 mb-0">{{ trans('admini::post.tags.tags') }}</h6>
         <div class="row media text-muted pt-3">
@@ -65,6 +66,7 @@
             </div>
         </div>
     </div>
+    @endif
 
     @foreach ($config['languages'] as $item)
     <div class="my-3 p-3 bg-white rounded shadow-sm">
@@ -100,12 +102,12 @@
 @push('scripts')
 <script>
     let codeToggler = {
-        init: e => $(`#${e} .w-e-toolbar`).prepend(`<div class="w-e-menu btn-code"><a class="_wangEditor_btn_code" href="javascript:;" onclick="codeToggler.toggle('${e}')">CODE</a></div>`),
+        init: e => $(`#${e} .w-e-toolbar`).prepend(`<div class="w-e-menu btn-code"><a class="_wangEditor_btn_code" href="javascript:;" onclick="codeToggler.toggle('${e}')">HTML</a></div>`),
         toggle: e => {
             let btn = $(`#${e} ._wangEditor_btn_code`)
             $(`#${e} .w-e-text-container, #${e} .w-e-menu, #c${e}`).toggle()
             $(`#${e} .btn-code`).show()
-            btn.text() == 'CODE' ? btn.text('HTML') : btn.text('CODE')
+            btn.text() == 'HTML' ? btn.text('Visual Editor') : btn.text('HTML')
         }
     }
 
@@ -128,7 +130,6 @@
         et[i.language].create()
         codeToggler.init(i.language)
         et[i.language].txt.html($(`#c${i.language}`).val())
-        // $(`#c${i.language}`).val(et[i.language].txt.html()).change(function() {
         $(`#c${i.language}`).change(function() {
             et[i.language].txt.html($(this).val())
         })

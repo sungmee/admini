@@ -17,6 +17,16 @@ return [
 
     'mobile_version' => false,
 
+    'post_type' => [
+        'post'      => false,
+        'page'      => true,
+        'new'       => true,
+        'notice'    => false,
+        'file'      => false,
+        'menu'      => false,
+        'homepage'  => false
+    ],
+
     'post_meta' => [
         // [
         //     'type' => 'radio', // radio, checkbox

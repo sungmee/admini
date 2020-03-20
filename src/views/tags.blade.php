@@ -52,8 +52,11 @@
                         <select
                             class="form-control"
                             name="type">
-                            <option value="page"{{ old('type', $tag->type ?? '')=='page' ? ' selected' : '' }}>{{ trans('admini::post.post_type.page') }}</option>
-                            <option value="new"{{ old('type', $tag->type ?? '')=='new' ? ' selected' : '' }}>{{ trans('admini::post.post_type.new') }}</option>
+                            @foreach (config('admini.post_type') as $k => $v)
+                            @if ($v)
+                                <option value="{{ $k }}"{{ old('type', $tag->type ?? '')==$k ? ' selected' : '' }}>{{ trans("admini::post.post_type.$k") }}</option>
+                            @endif
+                            @endforeach
                         </select>
                         @if ($errors->has('type'))
                             <span class="help-block">
