@@ -18,7 +18,7 @@
                     <div class="input-group-prepend">
                         <div class="input-group-text">{{ config('app.url') }}/</div>
                     </div>
-                    <input type="text" class="form-control{{ $errors->has('slug') ? ' is-invalid' : '' }}" id="slug" name="slug" value="{{ old('slug', $post->slug ?? '') }}" autofocus>
+                    <input type="text" class="form-control{{ $errors->has('slug') ? ' is-invalid' : '' }}" id="slug" name="slug" value="{{ old('slug', $post->slug ?? '') }}" placeholder="{{ time() }}" autofocus>
                 </div>
                 @if ($errors->has('slug'))
                 <div class="invalid-feedback">
