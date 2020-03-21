@@ -65,7 +65,7 @@ class PostController extends Controller
         $client = $request->client ?? 'pc';
         $action = route("admini.posts.update", compact('type','id')) . "?client=$client";
         $post = (new Admini)->postFull($id);
-        $title = $post->title ?? Str::title($post->slug);
+        $title = $post->title;
         $subtitle = trans("admini::post.subtitle.now_edit_client.$client");
         $tags = DB::table('tags')->where('type', str_replace('s', '', $type))->get();
         $taggables = DB::table('taggables')->where('taggable_id', $post->id)->pluck('tag_id')->all();

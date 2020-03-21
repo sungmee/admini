@@ -87,6 +87,8 @@ class Admini {
                 ->first();
         }
 
+        $post->title = $post->{$this->language}->title ?? Str::title($post->slug);
+
         return $post;
     }
 
