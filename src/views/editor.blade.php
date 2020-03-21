@@ -14,7 +14,12 @@
         <div class="row media text-muted pt-3">
             <div class="form-group col-12">
                 <label for="slug">{{ trans('admini::post.editor.slug_label') }}</label>
-                <input type="text" class="form-control{{ $errors->has('slug') ? ' is-invalid' : '' }}" id="slug" name="slug" value="{{ old('slug', $post->slug ?? '') }}" autofocus>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">{{ config('app.url') }}/</div>
+                    </div>
+                    <input type="text" class="form-control{{ $errors->has('slug') ? ' is-invalid' : '' }}" id="slug" name="slug" value="{{ old('slug', $post->slug ?? '') }}" autofocus>
+                </div>
                 @if ($errors->has('slug'))
                 <div class="invalid-feedback">
                     {{ $errors->first('slug') }}
