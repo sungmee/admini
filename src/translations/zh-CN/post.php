@@ -58,6 +58,7 @@ return [
         'update_success' => '已成功更新！',
         'store_success' => '已成功添加！',
         'destory_success' => '已成功删除！',
+        'custom_style' => '自定义样式表 (CSS)',
     ],
     'tags' => [
         'title' => '管理标签',

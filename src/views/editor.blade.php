@@ -37,16 +37,16 @@
                         @foreach ($item['radios'] as $i)
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="{{ $item['type'] }}" name="meta[{{ $item['name'] }}]" id="meta_{{ $item['name'] }}_{{ $i['value'] }}" value="{{ $i['value'] }}"{{ $value == $i['value'] ? ' checked' : '' }}>
-                            <label class="form-check-label" for="meta[{{ $item['name'] }}]">{{ $i['label'] }}</label>
+                            <label class="form-check-label" for="meta[{{ $item['name'] }}]">{{ trans($i['label']) }}</label>
                         </div>
                         @endforeach
                     @break
                     @case('textarea')
-                        <label for="meta[{{ $item['name'] }}]">{{ $item['label'] }}</label>
+                        <label for="meta[{{ $item['name'] }}]">{{ trans($item['label']) }}</label>
                         <textarea class="form-control{{ $errors->has('slug') ? ' is-invalid' : '' }}" id="meta_{{ $item['name'] }}" name="meta[{{ $item['name'] }}]">{{ $value }}</textarea>
                     @break
                     @default
-                        <label for="meta[{{ $item['name'] }}]">{{ $item['label'] }}</label>
+                        <label for="meta[{{ $item['name'] }}]">{{ trans($item['label']) }}</label>
                         <input type="{{ $item['type'] }}" class="form-control" id="meta_{{ $item['name'] }}" name="meta[{{ $item['name'] }}]" value="{{ $value }}">
                 @endswitch
             </div>

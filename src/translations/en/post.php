@@ -58,6 +58,7 @@ return [
         'update_success' => 'Update was successful!',
         'store_success' => 'Store was successful!',
         'destory_success' => 'Delete was successful!',
+        'custom_style' => 'Custom style (CSS)',
     ],
     'tags' => [
         'title' => 'Tags',

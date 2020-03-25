@@ -40,7 +40,7 @@ return [
         [
             'type' => 'textarea', // text, number, phone, password, textarea
             'name' => 'style',
-            'label' => '自定义样式表（CSS）',
+            'label' => 'custom_style',
             'col' => 12
         ],
     ],
