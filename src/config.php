@@ -4,6 +4,7 @@ return [
     'email' => env('ADMINI_EMAIL', 'admin@app.dev'),
     'password' => env('ADMINI_PASSWORD', '123456'),
 
+    'auto_language' => true,
     'languages' => [
         [
             'language' => 'en',
