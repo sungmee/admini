@@ -31,7 +31,9 @@ class CreatePostsTable extends Migration
                 $table->longText('pc');
                 $table->longText('mobile')->nullable();
 
-                $table->foreign('post_id')->references('id')->on('posts');
+                $table->foreign('post_id')
+                      ->references('id')->on('posts')
+                      ->onDelete('cascade');
             });
         }
     }
