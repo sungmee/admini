@@ -46,14 +46,16 @@ class PostController extends Controller
         ]);
         $this->content($request, $id);
 
-        $taggables = [];
-        foreach ($request->tags as $item) {
-            $taggables[] = [
-                'tag_id' => $item,
-                'taggable_id' => $id
-            ];
+        if (! empty($request->tags)) {
+            $taggables = [];
+            foreach ($request->tags as $item) {
+                $taggables[] = [
+                    'tag_id' => $item,
+                    'taggable_id' => $id
+                ];
+            }
+            DB::table('taggables')->insert($taggables);
         }
-        DB::table('taggables')->insert($taggables);
 
         $request->session()->flash('alert', trans('admini::post.editor.store_success'));
         $request->session()->flash('alert-contextual', 'success');
