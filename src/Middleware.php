@@ -17,7 +17,7 @@ class Middleware
     public function handle($request, Closure $next)
     {
         $conf   = Config::get('admini');
-        $lang   = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE'])[0];
+        $lang   = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE'])[0] : config('app.locale');
         $auto   = $conf['auto_language'] ? $lang : null;
         $locale = $_REQUEST['lang'] ?? session('locale', $auto);
         $locale = collect($conf['languages'])->firstWhere('locale', $locale);
