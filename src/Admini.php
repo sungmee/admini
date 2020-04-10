@@ -95,10 +95,13 @@ class Admini {
     public function post(string $slug, $subslug = null)
     {
         $post = $this->getPost($subslug ?? $slug);
-        $post->locale = $this->locale;
-        $post->meta = json_decode($post->meta, true);
-        $post->suptitle = $subslug ? $this->getPost($slug)->title : null;
-        $post->tags = $this->getTags($post->post_id);
+
+        if ( ! empty($post) ) {
+            $post->locale = $this->locale;
+            $post->meta = json_decode($post->meta, true);
+            $post->suptitle = $subslug ? $this->getPost($slug)->title : null;
+            $post->tags = $this->getTags($post->post_id);
+        }
 
         return $post;
     }
