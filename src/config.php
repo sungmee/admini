@@ -6,19 +6,13 @@ return [
 
     'auto_language' => true,
     'languages' => [
-        [
-            'language' => 'en',
-            'locale' => 'en'
-        ],
-        [
-            'language' => 'cn',
-            'locale' => 'zh-CN'
-        ],
+        ['language' => 'en', 'locale' => 'en'],
+        ['language' => 'cn', 'locale' => 'zh-CN'],
     ],
 
     'mobile_version' => false,
-    'post_subtitle' => true,
-    'post_addition' => true,
+    'post_subtitle'  => true,
+    'post_addition'  => true,
 
     'post_type' => [
         'post'      => false,
@@ -32,8 +26,8 @@ return [
 
     'post_meta' => [
         // [
-        //     'type' => 'radio', // radio, checkbox
-        //     'name' => 'radio',
+        //     'type'   => 'radio', // radio, checkbox
+        //     'name'   => 'radio',
         //     'radios' => [
         //         ['value' => 1, 'label' => 'One'],
         //         ['value' => 2, 'label' => 'Two'],
@@ -41,10 +35,10 @@ return [
         //     'col' => 6
         // ]
         [
-            'type' => 'textarea', // text, number, phone, password, textarea
-            'name' => 'style',
+            'type'  => 'textarea', // text, number, phone, password, textarea
+            'name'  => 'style',
             'label' => 'custom_style',
-            'col' => 12
+            'col'   => 12
         ],
     ],
 
