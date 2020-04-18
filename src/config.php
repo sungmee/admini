@@ -1,15 +1,15 @@
 <?php
 
 return [
-    'email' => env('ADMINI_EMAIL', 'admin@app.dev'),
+    'email'    => env('ADMINI_EMAIL', 'admin@app.dev'),
     'password' => env('ADMINI_PASSWORD', '123456'),
 
-    'auto_language' => true,
     'languages' => [
         ['language' => 'en', 'locale' => 'en'],
         ['language' => 'cn', 'locale' => 'zh-CN'],
     ],
 
+    'auto_language'  => true,
     'mobile_version' => false,
     'post_subtitle'  => true,
     'post_addition'  => true,
@@ -21,8 +21,10 @@ return [
         'notice'    => false,
         'file'      => false,
         'menu'      => false,
-        'homepage'  => false
+        'homepage'  => false,
     ],
+
+    'delete_botton_in_post_types' => ['news', 'pages'],
 
     'post_meta' => [
         // [
@@ -41,6 +43,4 @@ return [
             'col'   => 12
         ],
     ],
-
-    'delete_botton_in_post_types' => ['news', 'pages'],
 ];
