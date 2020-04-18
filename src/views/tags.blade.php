@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col-4">
         <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <h6 class="border-bottom border-gray pb-2 mb-0">{{ isset($tag) ? trans('admini::post.tags.edit') : trans('admini::post.editor.add') }}{{ trans('admini::post.tags.tag') }}</h6>
+            <h6 class="border-bottom border-gray pb-2 mb-0">{{ isset($tag) ? trans('admini::post.tags.edit') : trans('admini::post.editor.add') }} {{ trans('admini::post.tags.tag') }}</h6>
             <div class="media text-muted pt-3">
                 <form action="{{ isset($tag) ? route('admini.tags.update', $tag->id) : route('admini.tags.store') }}" method="POSt" style="width:100%">
                     <div class="form-group{{ $errors->has('names') ? ' has-error' : '' }}">
@@ -22,7 +22,7 @@
                             class="form-control tag-name {{ $loop->first ? 'tag-name-first' : ($loop->last ? 'tag-name-last' : '') }}"
                             name="names[{{ $item['language'] }}]"
                             value="{{ old('names.'.$item['language'], $tag->names[$item['language']] ?? '') }}"
-                            placeholder="{{ trans('admini::locale.'.$item['language']) }}{{ trans('admini::post.tags.name') }}">
+                            placeholder="{{ trans('admini::locale.'.$item['language']) }} {{ trans('admini::post.tags.name') }}">
                         @endforeach
                         @if ($errors->has('names'))
                             <span class="help-block">
