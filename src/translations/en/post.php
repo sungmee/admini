@@ -59,6 +59,8 @@ return [
         'store_success' => 'Store was successful!',
         'destory_success' => 'Delete was successful!',
         'custom_style' => 'Custom style (CSS)',
+        'subtitle' => 'Subtitle',
+        'addition' => 'Addition',
     ],
     'tags' => [
         'title' => 'Tags',

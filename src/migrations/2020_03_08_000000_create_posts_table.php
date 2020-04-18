@@ -28,8 +28,10 @@ class CreatePostsTable extends Migration
                 $table->increments('id');
                 $table->unsignedInteger('post_id')->unique();
                 $table->string('title', 100);
+                $table->string('subtitle', 512)->nullable();
                 $table->longText('pc');
                 $table->longText('mobile')->nullable();
+                $table->string('addition', 512)->nullable();
 
                 $table->foreign('post_id')
                       ->references('id')->on('posts')

@@ -127,10 +127,14 @@ class PostController extends Controller
         foreach (config('admini.languages') as $lang) {
             $table = Str::plural($lang['language']);
             $title = "title_{$lang['language']}";
+            $subtitle = "subtitle_{$lang['language']}";
+            $addition = "addition_{$lang['language']}";
             $content = "content_{$lang['language']}";
             $client = $request->client ?? 'pc';
             DB::table($table)->updateOrInsert($post_id,[
                 'title' => $request->$title,
+                'subtitle' => $request->$subtitle,
+                'addition' => $request->$addition,
                 $client => $request->$content
             ]);
         }
@@ -167,6 +171,8 @@ class PostController extends Controller
 
         foreach (config('admini.languages') as $lang) {
             $rules["title_{$lang['language']}"] = 'required|string|max:100';
+            $rules["subtitle_{$lang['language']}"] = 'nullable|string|max:512';
+            $rules["addition_{$lang['language']}"] = 'nullable|string|max:512';
             $rules["content_{$lang['language']}"] = 'nullable|string';
         }
 

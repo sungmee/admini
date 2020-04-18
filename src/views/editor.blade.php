@@ -78,10 +78,26 @@
         <h6 class="border-bottom border-gray pb-2 mb-0">{{ trans('admini::locale.'.$item['language']) }}</h6>
         <div class="row media text-muted pt-3">
             <div class="form-group col-12 {{ $client ?? '' }}">
-                <input type="text" class="form-control{{ $errors->has('title_'.$item['language']) ? ' is-invalid' : '' }}" name="title_{{ $item['language'] }}" value="{{ old('title_'.$item['language'], $post->{$item['language']}->title ?? '') }}" placeholder="{{ trans('admini::locale.'.$item['language']) }}{{ trans('admini::post.editor.title') }}" required>
+                <input type="text" class="form-control{{ $errors->has('title_'.$item['language']) ? ' is-invalid' : '' }}" name="title_{{ $item['language'] }}" value="{{ old('title_'.$item['language'], $post->{$item['language']}->title ?? '') }}" placeholder="{{ trans('admini::locale.'.$item['language']) }} {{ trans('admini::post.editor.title') }}" required>
                 @if ($errors->has('title_'.$item['language']))
                 <div class="invalid-feedback">
                     {{ $errors->first('title_'.$item['language']) }}
+                </div>
+                @endif
+            </div>
+            <div class="form-group col-12 {{ $client ?? '' }} {{ $config['post_subtitle'] ? '' : 'dn' }}">
+                <input type="text" class="form-control{{ $errors->has('subtitle_'.$item['language']) ? ' is-invalid' : '' }}" name="subtitle_{{ $item['language'] }}" value="{{ old('subtitle_'.$item['language'], $post->{$item['language']}->subtitle ?? '') }}" placeholder="{{ trans('admini::locale.'.$item['language']) }} {{ trans('admini::post.editor.subtitle') }}">
+                @if ($errors->has('subtitle_'.$item['language']))
+                <div class="invalid-feedback">
+                    {{ $errors->first('subtitle_'.$item['language']) }}
+                </div>
+                @endif
+            </div>
+            <div class="form-group col-12 {{ $client ?? '' }} {{ $config['post_addition'] ? '' : 'dn' }}">
+                <input type="text" class="form-control{{ $errors->has('addition_'.$item['language']) ? ' is-invalid' : '' }}" name="addition_{{ $item['language'] }}" value="{{ old('addition_'.$item['language'], $post->{$item['language']}->addition ?? '') }}" placeholder="{{ trans('admini::locale.'.$item['language']) }} {{ trans('admini::post.editor.addition') }}">
+                @if ($errors->has('addition_'.$item['language']))
+                <div class="invalid-feedback">
+                    {{ $errors->first('addition_'.$item['language']) }}
                 </div>
                 @endif
             </div>
