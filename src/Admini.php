@@ -45,32 +45,33 @@ class Admini {
             ->get();
     }
 
-    public function pages()
+    public function pages(int $limit = 10)
     {
-        return $this->posts('page');
+        return $this->posts('page', $limit);
     }
 
-    public function news()
+    public function news(int $limit = 10)
     {
-        return $this->posts('new');
+        return $this->posts('new', $limit);
     }
 
-    public function notices()
+    public function notices(int $limit = 10)
     {
-        return $this->posts('notice');
+        return $this->posts('notice', $limit);
     }
 
-    public function files()
+    public function files(int $limit = 10)
     {
-        return $this->posts('file');
+        return $this->posts('file', $limit);
     }
 
-    public function posts(string $type = 'post')
+    public function posts(string $type = 'post', int $limit = 10)
     {
         return DB::table('posts')
             ->where('type', str_replace('s', '', $type))
             ->join($this->table, 'posts.id', '=', "{$this->table}.post_id")
             ->orderBy('created_at', 'DESC')
+            ->limit($limit)
             ->get();
     }
 
@@ -99,7 +100,7 @@ class Admini {
         if ( ! empty($post) ) {
             $post->locale = $this->locale;
             $post->meta = json_decode($post->meta, true);
-            $post->suptitle = $subslug ? $this->getPost($slug)->title : null;
+            $post->suptitle = $subslug ? ($this->getPost($slug)->title ?? Str::title($slug)) : null;
             $post->tags = $this->getTags($post->post_id);
         }
 
