@@ -101,7 +101,9 @@ class Admini {
 
     public function paginate(int $per_page = 15)
     {
-        return $this->posts->paginate($per_page);
+        return $this->posts
+            ->orderBy($this->orderBy, $this->order)
+            ->paginate($per_page);
     }
 
     public function posts(string $type = 'post')
