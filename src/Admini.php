@@ -11,6 +11,10 @@ class Admini {
     public $languageMaps;
     public $language;
     public $table;
+    public $orderBy;
+    public $order;
+    public $limit;
+    public $posts;
 
     public function __construct()
     {
@@ -25,6 +29,10 @@ class Admini {
         $this->languageMaps = $languageMaps;
         $this->language = $languageMaps[$locale];
         $this->table = Str::plural($languageMaps[$locale]);
+
+        $this->orderBy = 'created_at';
+        $this->order = 'DESC';
+        $this->limit = 15;
     }
 
     public function tag(string $slug)
@@ -45,34 +53,63 @@ class Admini {
             ->get();
     }
 
-    public function pages(int $limit = 10)
+    public function pages()
     {
-        return $this->posts('page', $limit);
+        return $this->posts('page');
     }
 
-    public function news(int $limit = 10)
+    public function news()
     {
-        return $this->posts('new', $limit);
+        return $this->posts('new');
     }
 
-    public function notices(int $limit = 10)
+    public function notices()
     {
-        return $this->posts('notice', $limit);
+        return $this->posts('notice');
     }
 
-    public function files(int $limit = 10)
+    public function files()
     {
-        return $this->posts('file', $limit);
+        return $this->posts('file');
     }
 
-    public function posts(string $type = 'post', int $limit = 10)
+    public function orderBy(string $orderBy = 'created_at')
     {
-        return DB::table('posts')
-            ->where('type', str_replace('s', '', $type))
-            ->join($this->table, 'posts.id', '=', "{$this->table}.post_id")
-            ->orderBy('created_at', 'DESC')
-            ->limit($limit)
+        $this->orderBy = $orderBy;
+        return $this;
+    }
+
+    public function order(string $order)
+    {
+        $this->order = $order;
+        return $this;
+    }
+
+    public function limit(int $limit)
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    public function get()
+    {
+        return $this->posts
+            ->orderBy($this->orderBy, $this->order)
+            ->limit($this->limit)
             ->get();
+    }
+
+    public function paginate(int $per_page = 15)
+    {
+        return $this->posts->paginate($per_page);
+    }
+
+    public function posts(string $type = 'post')
+    {
+        $this->posts = DB::table('posts')
+            ->where('type', str_replace('s', '', $type))
+            ->join($this->table, 'posts.id', '=', "{$this->table}.post_id");
+        return $this;
     }
 
     public function postFull(int $id)

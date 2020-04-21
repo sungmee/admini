@@ -13,9 +13,9 @@ class PostController extends Controller
 {
     public function index(Request $request, string $type)
     {
-        $posts = (new Admini)->posts($type);
+        $posts = (new Admini)->posts($type)->paginate();
         $title = trans("admini::post.post_type.$type") . ' ' . trans('admini::post.editor.list');
-        $subtitle = trans('admini::post.subtitle.total', ['total' => count($posts)]);
+        $subtitle = trans('admini::post.subtitle.total', ['total' => $posts->total()]);
 
         return view('admini::index', compact('type', 'posts', 'title', 'subtitle'));
     }

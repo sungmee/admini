@@ -139,6 +139,10 @@
         .w-e-menu a:hover {
             color: #333;
         }
+
+        nav .pagination {
+            justify-content: flex-end!important;
+        }
     </style>
 
     <title>{{ config('app.name') }} - @yield('title')</title>

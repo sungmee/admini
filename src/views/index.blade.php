@@ -5,12 +5,13 @@
 @php
     $index = -1;
     $color = ['#007bff','#e83e8c','#6f42c1'];
+    var_dump($posts);
 @endphp
 
 @section('content')
 <div class="my-3 p-3 bg-white rounded shadow-sm">
     <h6 class="border-bottom border-gray pb-2 mb-0">{{ trans('admini::post.index.recent_update') }}</h6>
-    @forelse ($posts as $item)
+    @forelse ($posts->items() as $item)
     @php $index = $index < 2 ? $index + 1 : 0; @endphp
     <div class="media text-muted pt-3" id="item-{{ $item->post_id }}">
         <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="{{ $color[$index] }}"/><text x="50%" y="50%" fill="{{ $color[$index] }}" dy=".3em">32x32</text></svg>
@@ -30,8 +31,8 @@
     @empty
         <p>{{ trans('admini::post.index.no_data') }}</p>
     @endforelse
-    <small class="d-block text-right mt-3">
-        <a href="?list=all">{{ trans('admini::post.index.all') }}{{ $title }}</a>
+    <small class="d-block mt-3">
+        {{ $posts->links() }}
     </small>
 </div>
 @stop
