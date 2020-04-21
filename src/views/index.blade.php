@@ -5,7 +5,6 @@
 @php
     $index = -1;
     $color = ['#007bff','#e83e8c','#6f42c1'];
-    var_dump($posts);
 @endphp
 
 @section('content')
