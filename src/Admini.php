@@ -15,6 +15,7 @@ class Admini {
     public $order;
     public $limit;
     public $posts;
+    public $thumbnail;
 
     public function __construct()
     {
@@ -33,6 +34,7 @@ class Admini {
         $this->orderBy = 'created_at';
         $this->order = 'DESC';
         $this->limit = 15;
+        $this->thumbnail = $config['post_thumbnail'];
     }
 
     public function tag(string $slug)
@@ -101,9 +103,20 @@ class Admini {
 
     public function paginate(int $per_page = 15)
     {
-        return $this->posts
+        $posts = $this->posts
             ->orderBy($this->orderBy, $this->order)
             ->paginate($per_page);
+
+        $posts->getCollection()->transform(function($item) {
+            preg_match ("<img.*src=[\"](.*?)[\"].*?>", $item->pc, $match);
+            $color = mt_rand(0, 0xFFFFFF);
+            $text  = explode(' ', $item->title)[0];
+            $src = $match[1] ?? "https://placehold.it/{$this->thumbnail}/$color/ffffff?text=$text";
+            $item->thumbnail = $src;
+            return $item;
+        });
+
+        return $posts;
     }
 
     public function posts(string $type = 'post')

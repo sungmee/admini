@@ -13,6 +13,7 @@ return [
     'mobile_version' => false,
     'post_subtitle'  => true,
     'post_addition'  => true,
+    'post_thumbnail' => '400x300',
 
     'post_type' => [
         'post'      => false,
