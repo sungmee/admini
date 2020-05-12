@@ -44,4 +44,6 @@ return [
             'col'   => 12
         ],
     ],
+
+    'custom_links' => [],
 ];
