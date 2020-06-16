@@ -22,13 +22,17 @@ class Middleware
                   ? explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE'])[0]
                   : $default;
         $auto   = $conf['auto_language'] ? $lang : null;
-        $locale = $_REQUEST['lang'] ?? session('locale', $auto);
+        $locale = $request->lang ?? session('locale', $auto);
         $locale = collect($conf['languages'])->firstWhere('locale', $locale);
         $locale = $locale['locale'] ?? $default;
 
         session(['locale' => $locale]);
         \App::setLocale($locale);
 
-        return $request->has('lang') ? redirect(url()->current()) : $next($request);
+        $params = $request->all();
+        unset($params['lang']);
+        $url = url()->current() . '?' . http_build_query($params);
+
+        return $request->has('lang') ? redirect($url) : $next($request);
     }
 }
