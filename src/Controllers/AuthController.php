@@ -1,6 +1,6 @@
 <?php
 
-namespace Sungmee\Admini;
+namespace Sungmee\Admini\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

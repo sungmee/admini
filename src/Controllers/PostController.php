@@ -1,6 +1,6 @@
 <?php
 
-namespace Sungmee\Admini;
+namespace Sungmee\Admini\Controllers;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
