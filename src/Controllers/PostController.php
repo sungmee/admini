@@ -2,6 +2,7 @@
 
 namespace Sungmee\Admini\Controllers;
 
+use Sungmee\Admini\Admini;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;

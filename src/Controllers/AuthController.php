@@ -2,6 +2,7 @@
 
 namespace Sungmee\Admini\Controllers;
 
+use Sungmee\Admini\Admini;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
