@@ -4,6 +4,7 @@ namespace Sungmee\Admini;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class Admini {
     public $config;
@@ -124,6 +125,7 @@ class Admini {
         $this->posts = DB::table('posts')
             ->where('type', str_replace('s', '', $type))
             ->join($this->table, 'posts.id', '=', "{$this->table}.post_id");
+
         return $this;
     }
 
@@ -192,7 +194,7 @@ class Admini {
     public function auth()
     {
         $email = $this->config['email'];
-        return $email == session('auth') ? $email : false;
+        return ($email == session('auth') ? $email : false) || Auth::user()->isAdmin();
     }
 
     public function attempt($req)

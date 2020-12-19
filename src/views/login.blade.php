@@ -92,6 +92,7 @@
         </div>
         @endif
         @csrf
+
         <button class="btn btn-lg btn-primary btn-block" type="submit">{{ trans('admini::auth.login') }}</button>
         <p class="mt-5 mb-3 text-muted">&copy; {{ date('Y') }} {Admini} by 0xSmart</p>
     </form>
