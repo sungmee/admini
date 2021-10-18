@@ -71,7 +71,7 @@ class PostController extends Controller
         $title = $post->title;
         $subtitle = trans("admini::post.subtitle.now_edit_client.$client");
         $tags = DB::table('tags')->where('type', str_replace('s', '', $type))->get();
-        $taggables = DB::table('taggables')->where('taggable_id', $post->id)->pluck('tag_id')->all();
+        $taggables = DB::table('taggables')->where('taggable_id', $id)->pluck('tag_id')->all();
         return view('admini::editor', compact('client', 'title', 'subtitle', 'action', 'post', 'tags', 'taggables'));
     }
 
