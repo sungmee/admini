@@ -6,14 +6,14 @@ return [
 
     'languages' => [
         ['language' => 'en', 'locale' => 'en'],
-        ['language' => 'cn', 'locale' => 'zh-CN'],
+        ['language' => 'cn', 'locale' => 'zh_CN'],
     ],
 
     'auto_language'  => true,
     'mobile_version' => false,
     'post_subtitle'  => true,
     'post_addition'  => true,
-    'post_thumbnail' => '400x300',
+    'post_thumbnail_default' => null,
 
     'post_type' => [
         'post'      => false,

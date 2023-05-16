@@ -2,13 +2,13 @@
 
 namespace Sungmee\Admini\Controllers;
 
-use Sungmee\Admini\Admini;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Sungmee\Admini\Admini;
 
 class PostController extends Controller
 {
@@ -26,7 +26,7 @@ class PostController extends Controller
         $client = 'pc';
         $title = trans('admini::post.editor.add') . ' ' . trans("admini::post.post_type.$type");
         $action = route('admini.posts.store', compact('type'));
-        $tags = DB::table('tags')->where('type', str_replace('s', '', $type))->get();
+        $tags = DB::table('tags')->where('type', Str::singular($type))->get();
         $taggables = [];
 
         return view('admini::editor', compact('client', 'title', 'action', 'tags', 'taggables'));
@@ -39,7 +39,7 @@ class PostController extends Controller
         $now = now();
 
         $id = DB::table('posts')->insertGetId([
-            'type' => str_replace('s', '', $type),
+            'type' => Str::singular($type),
             'slug' => $request->slug ? Str::slug($request->slug, '-') : time(),
             'meta' => json_encode($request->meta),
             'created_at' => $now,
@@ -70,7 +70,7 @@ class PostController extends Controller
         $post = (new Admini)->postFull($id);
         $title = $post->title;
         $subtitle = trans("admini::post.subtitle.now_edit_client.$client");
-        $tags = DB::table('tags')->where('type', str_replace('s', '', $type))->get();
+        $tags = DB::table('tags')->where('type', Str::singular($type))->get();
         $taggables = DB::table('taggables')->where('taggable_id', $id)->pluck('tag_id')->all();
         return view('admini::editor', compact('client', 'title', 'subtitle', 'action', 'post', 'tags', 'taggables'));
     }
@@ -107,7 +107,7 @@ class PostController extends Controller
         return redirect(url()->previous());
     }
 
-    public function destory(string $type, int $id)
+    public function destory(Request $request, string $type, int $id)
     {
         DB::table('posts')->where('id', $id)->delete();
         DB::table('taggables')->where('taggable_id', $id)->delete();

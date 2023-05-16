@@ -2,9 +2,9 @@
 
 namespace Sungmee\Admini;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class Admini {
     public $config;
@@ -16,7 +16,7 @@ class Admini {
     public $order;
     public $limit;
     public $posts;
-    public $thumbnail;
+    public $thumbnail_default;
 
     public function __construct()
     {
@@ -35,10 +35,26 @@ class Admini {
         $this->orderBy = 'created_at';
         $this->order = 'DESC';
         $this->limit = 15;
-        $this->thumbnail = $config['post_thumbnail'];
+        $this->thumbnail_default = $config['post_thumbnail_default'];
+    }
+
+    public function tags()
+    {
+        return DB::table('tags')->all();
     }
 
     public function tag(string $slug)
+    {
+        $tag = DB::table('tags')
+            ->where('slug', $slug)
+            ->first();
+
+        $tag->names = json_decode($tag->names, true);
+
+        return $tag;
+    }
+
+    public function postsByTag(string $slug)
     {
         $tid = DB::table('tags')
             ->where('slug', $slug)
@@ -49,11 +65,12 @@ class Admini {
             ->pluck('taggable_id')
             ->all();
 
-        return DB::table('posts')
-            ->whereIn('id', $pids)
+        $this->posts = DB::table('posts')
+            ->whereIn('posts.id', $pids)
             ->join($this->table, 'posts.id', '=', "{$this->table}.post_id")
-            ->orderBy('created_at', 'DESC')
-            ->get();
+            ->orderBy('created_at', 'DESC');
+
+        return $this;
     }
 
     public function pages()
@@ -109,11 +126,26 @@ class Admini {
             ->paginate($per_page);
 
         $posts->getCollection()->transform(function($item) {
-            preg_match ("<img.*src=[\"](.*?)[\"].*?>", $item->pc, $match);
-            $color = mt_rand(0, 0xFFFFFF);
-            $text  = explode(' ', $item->title)[0];
-            $src = $match[1] ?? "https://placehold.it/{$this->thumbnail}/$color/ffffff?text=$text";
-            $item->thumbnail = $src;
+            $item->thumbnail = null;
+
+            $meta = json_decode($item->meta, true);
+            if ( isset($meta['thumbnail']) && !empty($meta['thumbnail']) ) {
+                $item->thumbnail = $meta['thumbnail'];
+            }
+
+            preg_match("<img.*src=[\"](.*?)[\"].*?>", $item->pc, $match);
+            if ( !empty($match) ) {
+                $item->thumbnail = $match[1];
+            }
+
+            if ( $this->thumbnail_default ) {
+                $item->thumbnail = $this->thumbnail_default;
+            }
+
+            // $color = mt_rand(0, 0xFFFFFF);
+            // $text  = explode(' ', $item->title)[0];
+            // $src = $match[1] ?? "https://placehold.it/{$this->thumbnail}/$color/ffffff?text=$text";
+
             return $item;
         });
 
@@ -123,7 +155,7 @@ class Admini {
     public function posts(string $type = 'post')
     {
         $this->posts = DB::table('posts')
-            ->where('type', str_replace('s', '', $type))
+            ->where('type', Str::singular($type))
             ->join($this->table, 'posts.id', '=', "{$this->table}.post_id");
 
         return $this;
@@ -134,6 +166,7 @@ class Admini {
         $table = 'ens';
         $post = DB::table('posts')->find($id);
         $post->meta = json_decode($post->meta, true);
+        $post->thumbnail = $post->meta['thumbnail'] ?? $this->thumbnail_default;
 
         foreach ($this->config['languages'] as $item) {
             $table = Str::plural($item['language']);
@@ -156,6 +189,7 @@ class Admini {
             $post->meta = json_decode($post->meta, true);
             $post->suptitle = $subslug ? ($this->getPost($slug)->title ?? Str::title($slug)) : null;
             $post->tags = $this->getTags($post->post_id);
+            $post->thumbnail = $post->meta['thumbnail'] ?? $this->thumbnail_default;
         }
 
         return $post;
@@ -194,7 +228,7 @@ class Admini {
     public function auth()
     {
         $email = $this->config['email'];
-        return ($email == session('auth') ? $email : false) || Auth::user()->isAdmin();
+        return ($email == session('auth') ? $email : false) || optional(Auth::user())->isAdmin();
     }
 
     public function attempt($req)

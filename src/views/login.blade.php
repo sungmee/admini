@@ -74,6 +74,7 @@
 </head>
 <body class="text-center">
     <form class="form-signin"action="{{ route('admini.auth.auth') }}" method="post">
+        @csrf
         <img class="mb-4" src="https://iph.href.lu/72x72?text={Admini}&bg=4ab1e2&fb=f1a490" alt="" width="72" height="72">
 
         <h1 class="h3 mb-3 font-weight-normal">{{ trans('admini::auth.login_title') }}</h1>
