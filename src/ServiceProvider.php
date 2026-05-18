@@ -6,12 +6,7 @@ use Illuminate\Support\ServiceProvider as SP;
 
 class ServiceProvider extends SP
 {
-    /**
-     * Bootstrap the application services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
         $this->app['router']->pushMiddlewareToGroup('web', Middleware::class);
 
@@ -37,12 +32,7 @@ class ServiceProvider extends SP
         ], 'translations');
     }
 
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
         $this->app->bind('Admini', function () {
             return new Admini;

@@ -2,7 +2,7 @@
 
 namespace Sungmee\Admini\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -40,7 +40,7 @@ class PostController extends Controller
 
         $id = DB::table('posts')->insertGetId([
             'type' => Str::singular($type),
-            'slug' => $request->slug ? Str::slug($request->slug, '-') : time(),
+            'slug' => $request->slug ? Str::slug($request->slug, '-') : (string) time(),
             'meta' => json_encode($request->meta),
             'created_at' => $now,
             'updated_at' => $now
@@ -84,7 +84,7 @@ class PostController extends Controller
         DB::table('posts')
             ->where('id', $id)
             ->update([
-                'slug' => $request->slug ? Str::slug($request->slug, '-') : time(),
+                'slug' => $request->slug ? Str::slug($request->slug, '-') : (string) time(),
                 'meta' => json_encode($request->meta),
                 'updated_at' => now()
             ]);
@@ -121,7 +121,7 @@ class PostController extends Controller
         }
     }
 
-    private function content(Request $request, int $post_id)
+    private function content(Request $request, int $post_id): void
     {
         $post_id = compact('post_id');
 
@@ -161,7 +161,7 @@ class PostController extends Controller
         ];
     }
 
-    private function rules(int $id = null)
+    private function rules(?int $id = null): array
     {
         $rules = [
             'client' => 'nullable|string|in:pc,mobile',
@@ -183,10 +183,11 @@ class PostController extends Controller
     public function __construct()
     {
         $this->middleware(function ($request, $next){
-            if ( !!! (new Admini)->auth() ) {
+            if ( ! (new Admini)->auth() ) {
                 session(['url' => url()->current()]);
                 return redirect()->route('admini.auth.login');
-            } else return $next($request);
+            }
+            return $next($request);
         });
     }
 }

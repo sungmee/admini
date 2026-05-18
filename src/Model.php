@@ -2,14 +2,11 @@
 
 namespace Sungmee\Admini;
 
+use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model as M;
 
-class Post extends Model {}
-class En extends Language {}
-class Cn extends Language {}
-
-class Model extends M
+class Post extends Eloquent
 {
     protected $table = 'posts';
 
@@ -22,8 +19,6 @@ class Model extends M
     public function __call($method, $arguments)
     {
         if ($lang = collect(config('admini.languages'))->firstWhere('language', $method)) {
-            // $table = Str::plural($lang['language']);
-            // return $this->hasOne(new \Sungmee\Admini\Language($table), 'post_id');
             $class = '\\Sungmee\\Admini\\'.Str::studly($lang['language']);
             return $this->hasOne($class, 'post_id');
         }
@@ -31,16 +26,13 @@ class Model extends M
         return parent::__call($method, $arguments);
     }
 
-    /**
-     * 获得有此产品的分类。
-     */
-    public function tags()
+    public function tags(): MorphToMany
     {
         return $this->morphToMany(Tag::class, 'taggable');
     }
 }
 
-class Language extends M
+class Language extends Eloquent
 {
     protected $table = null;
     public $timestamps = false;
@@ -52,11 +44,13 @@ class Language extends M
     }
 }
 
-class Tag extends Model
+class Tag extends Eloquent
 {
+    protected $table = 'tags';
+
     protected $fillable = ['type', 'slug', 'name'];
 
-    public function posts()
+    public function posts(): MorphToMany
     {
         return $this->morphedByMany(Post::class, 'taggable');
     }

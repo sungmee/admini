@@ -3,15 +3,15 @@
 namespace Sungmee\Admini\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 
 class TagController extends Controller
 {
     public function index(Request $request)
     {
-        $tags = DB::table('tags')->orderBy('type')->get()->map(function ($item, $key) {
+        $tags = DB::table('tags')->orderBy('type')->get()->map(function ($item) {
             $item->names = json_decode($item->names, true);
             return $item;
         });
@@ -35,9 +35,9 @@ class TagController extends Controller
         return back();
     }
 
-    public function edit(Request $request, int $id = null)
+    public function edit(Request $request, ?int $id = null)
     {
-        $tags = DB::table('tags')->orderBy('type')->get()->map(function ($item, $key) {
+        $tags = DB::table('tags')->orderBy('type')->get()->map(function ($item) {
             $item->names = json_decode($item->names, true);
             return $item;
         });
@@ -66,27 +66,25 @@ class TagController extends Controller
         return back();
     }
 
-    public function destroy(int $id)
+    public function destroy(Request $request, int $id)
     {
         DB::table('tags')->where('id', $id)->delete();
 
         if (request()->ajax()) {
             return response()->json(['errno' => 0], 202);
-        } else {
-            $request->session()->flash('alert', trans('admini::post.editor.destory_success'));
-            $request->session()->flash('alert-contextual', 'success');
-            return back();
         }
+
+        $request->session()->flash('alert', trans('admini::post.editor.destory_success'));
+        $request->session()->flash('alert-contextual', 'success');
+        return back();
     }
 
-    public function rules(int $id = null)
+    public function rules(?int $id = null): array
     {
-        $rules = [
+        return [
             'names' => 'required|array',
             'type' => 'required|string|in:post,page,new,notice,file',
             'slug' => ['required','alpha_dash',Rule::unique('tags')->ignore($id)]
         ];
-
-        return $rules;
     }
 }

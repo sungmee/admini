@@ -7,16 +7,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class Admini {
-    public $config;
-    public $locale;
-    public $languageMaps;
-    public $language;
-    public $table;
-    public $orderBy;
-    public $order;
-    public $limit;
-    public $posts;
-    public $thumbnail_default;
+    public array $config;
+    public string $locale;
+    public array $languageMaps;
+    public string $language;
+    public string $table;
+    public string $orderBy;
+    public string $order;
+    public int $limit;
+    public mixed $posts;
+    public mixed $thumbnail_default;
 
     public function __construct()
     {
@@ -40,7 +40,7 @@ class Admini {
 
     public function tags()
     {
-        return DB::table('tags')->all();
+        return DB::table('tags')->get();
     }
 
     public function tag(string $slug)
@@ -54,7 +54,7 @@ class Admini {
         return $tag;
     }
 
-    public function postsByTag(string $slug)
+    public function postsByTag(string $slug): static
     {
         $tid = DB::table('tags')
             ->where('slug', $slug)
@@ -73,39 +73,39 @@ class Admini {
         return $this;
     }
 
-    public function pages()
+    public function pages(): static
     {
         return $this->posts('page');
     }
 
-    public function news()
+    public function news(): static
     {
         return $this->posts('new');
     }
 
-    public function notices()
+    public function notices(): static
     {
         return $this->posts('notice');
     }
 
-    public function files()
+    public function files(): static
     {
         return $this->posts('file');
     }
 
-    public function orderBy(string $orderBy = 'created_at')
+    public function orderBy(string $orderBy = 'created_at'): static
     {
         $this->orderBy = $orderBy;
         return $this;
     }
 
-    public function order(string $order)
+    public function order(string $order): static
     {
         $this->order = $order;
         return $this;
     }
 
-    public function limit(int $limit)
+    public function limit(int $limit): static
     {
         $this->limit = $limit;
         return $this;
@@ -142,17 +142,13 @@ class Admini {
                 $item->thumbnail = $this->thumbnail_default;
             }
 
-            // $color = mt_rand(0, 0xFFFFFF);
-            // $text  = explode(' ', $item->title)[0];
-            // $src = $match[1] ?? "https://placehold.it/{$this->thumbnail}/$color/ffffff?text=$text";
-
             return $item;
         });
 
         return $posts;
     }
 
-    public function posts(string $type = 'post')
+    public function posts(string $type = 'post'): static
     {
         $this->posts = DB::table('posts')
             ->where('type', Str::singular($type))
@@ -175,7 +171,7 @@ class Admini {
                 ->first();
         }
 
-        $post->title = $post->{$this->language}->title ?? Str::title($post->slug);
+        $post->title = $post->{$this->language}->title ?? Str::headline($post->slug);
 
         return $post;
     }
@@ -187,7 +183,7 @@ class Admini {
         if ( ! empty($post) ) {
             $post->locale = $this->locale;
             $post->meta = json_decode($post->meta, true);
-            $post->suptitle = $subslug ? ($this->getPost($slug)->title ?? Str::title($slug)) : null;
+            $post->suptitle = $subslug ? ($this->getPost($slug)->title ?? Str::headline($slug)) : null;
             $post->tags = $this->getTags($post->post_id);
             $post->thumbnail = $post->meta['thumbnail'] ?? $this->thumbnail_default;
         }
@@ -219,7 +215,7 @@ class Admini {
             });
     }
 
-    public function explodePath(string $slug, $subslug)
+    public function explodePath(string $slug, $subslug): array
     {
         $slugs = explode('/', $slug);
         return (count($slugs)==2 && is_null($subslug)) ? $slugs : [$slug, $subslug];
@@ -231,7 +227,7 @@ class Admini {
         return ($email == session('auth') ? $email : false) || optional(Auth::user())->isAdmin();
     }
 
-    public function attempt($req)
+    public function attempt($req): bool
     {
         return $req['email'] == $this->config['email'] && $req['password'] == $this->config['password'];
     }
